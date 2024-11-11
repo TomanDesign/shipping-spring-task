@@ -38,4 +38,4 @@ Informacje dodatkowe:
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/baselinker-spring-task.git
+   git clone https://github.com/TomanDesign/baselinker-spring-task
