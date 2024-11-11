@@ -3,9 +3,13 @@
 class Spring {
 
     private $apiUrl = 'https://mtapi.net/?testMode=1';
+    private $apiKey; // Private variable to store the API key
 
-    public function newPackage(array $order, array $params): array
+    public function newPackage(array $order, array $params): string
     {
+        // Store API key from $params for use in other functions
+        $this->apiKey = $params['api_key'];
+
         // Construct request with required format
         $packageRequest = [
             'Apikey' => $params['api_key'],
@@ -66,17 +70,32 @@ class Spring {
             exit;
         }
 
-        return $response['Shipment'];
+        return $response['Shipment']['CarrierTrackingNumber'];
     }
 
-    public function packagePDF(array $shipment)
+    public function packagePDF(string $trackingNumber)
     {
-         // var_dump($shipment);
+        // Use the stored API key in the request
+        $labelRequest = [
+            'Apikey' => $this->apiKey,
+            'Command' => 'GetShipmentLabel',
+            'Shipment' =>  [
+                'LabelFormat' => 'PDF',
+                'TrackingNumber' => $trackingNumber
+            ]
+        ];
 
-        if (isset($shipment['LabelImage'])) {
+        $response = $this->makeRequest($labelRequest);
+
+        if ($response['ErrorLevel'] !== 0) {
+            echo 'Error retrieving label: ' . $response['Error'];
+            exit;
+        }
+
+        if (isset($response['Shipment']['LabelImage'])) {
             // Decode base64-encoded PDF content and display
             header("Content-type: application/pdf");
-            echo base64_decode($shipment['LabelImage']);
+            echo base64_decode($response['Shipment']['LabelImage']);
         } else {
             echo 'Error: Label image not found in response.';
             exit;
@@ -102,5 +121,4 @@ class Spring {
 
         return json_decode($result, true);
     }
-
 }

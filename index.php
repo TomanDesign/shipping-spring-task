@@ -31,7 +31,7 @@ $params = [
 $courier = new Spring();
 
 // 2. Create shipment
-$shipment = $courier->newPackage($order, $params);
+$trackingNumber = $courier->newPackage($order, $params);
 
 // 3. Get shipping label and force a download dialog
-$courier->packagePDF($shipment);
+$courier->packagePDF($trackingNumber);
