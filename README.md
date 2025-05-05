@@ -1,4 +1,4 @@
-# BaseLinker Spring Task
+# Shipping Spring Task
 
 This repository provides a simple PHP solution for creating shipments and retrieving labels using the Spring courier broker API.
 
